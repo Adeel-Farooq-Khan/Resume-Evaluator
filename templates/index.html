@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart ATS</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        textarea, input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+        .feedback {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+        .feedback h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .feedback-section {
+            margin-bottom: 20px;
+        }
+        .feedback-section h3 {
+            color: #3498db;
+        }
+        .feedback-item {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .match-percentage {
+            font-size: 24px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <h1>Smart ATS</h1>
+    <form action="/evaluate_resume_form" method="post" enctype="multipart/form-data">
+        <label for="job_description">Job Description:</label>
+        <textarea id="job_description" name="job_description" rows="10" placeholder="Paste the job description here"></textarea>
+
+        <label for="resume">Upload Your Resume (PDF):</label>
+        <input type="file" id="resume" name="resume" accept="application/pdf">
+
+        <input type="submit" value="Evaluate Resume">
+    </form>
+
+    {% if feedback %}
+    <div class="feedback">
+        <h2>Resume Feedback</h2>
+
+        <div class="feedback-section">
+            <h3>Mistakes Found:</h3>
+            {% for mistake in feedback.get('Mistakes', []) %}
+                <div class="feedback-item">{{ mistake }}</div>
+            {% else %}
+                <div class="feedback-item">No significant mistakes found.</div>
+            {% endfor %}
+        </div>
+
+        <div class="feedback-section">
+            <h3>Missing Keywords:</h3>
+            {% for keyword in feedback.get('MissingKeywords', []) %}
+                <div class="feedback-item">{{ keyword }}</div>
+            {% else %}
+                <div class="feedback-item">No missing keywords identified.</div>
+            {% endfor %}
+        </div>
+
+        <div class="feedback-section">
+            <h3>Suggestions:</h3>
+            <div class="feedback-item">{{ feedback.get('Suggestions', 'No specific suggestions provided.') }}</div>
+        </div>
+
+        <div class="feedback-section">
+            <h3>JD Match:</h3>
+            <div class="match-percentage">{{ feedback.get('JD Match', 'N/A') }}%</div>
+        </div>
+    </div>
+    {% endif %}
+</body>
+</html>
